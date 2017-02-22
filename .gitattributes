@@ -15,4 +15,4 @@
 *.pdf -crlf -diff -merge
 *.jpg -crlf -diff -merge
 *.png -crlf -diff -merge
-html linguist-documentation
+html/* linguist-documentation
