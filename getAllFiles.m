@@ -57,7 +57,8 @@ function fileList = getAllFiles(rootPath, varargin)
 
 % Author: Ken Eaton
 % Version: MATLAB R2016b
-% Last modified: 1/26/17
+% Last modified: 2/23/17
+% Copyright 2017 by Kenneth P. Eaton
 %--------------------------------------------------------------------------
 
   % Create input parser (only have to do this once, hence the use of a
