@@ -60,6 +60,9 @@ function fileList = getAllFiles(rootPath, varargin)
 %
 %   See also dir, regexp.
 
+% TODO:
+% - Add '-struct' option? (return dir struct instead of file name)
+
 % Author: Ken Eaton
 % Version: MATLAB R2016b
 % Last modified: 3/6/17
