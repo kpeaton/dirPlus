@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>getAllFiles demo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-26"><meta name="DC.source" content="getAllFiles_demo.m"><style type="text/css">
+      --><title>getAllFiles demo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-06"><meta name="DC.source" content="getAllFiles_demo.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,120 +66,104 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><i>getAllFiles</i> demo</h1><!--introduction--><p>The <i>getAllFiles</i> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the Image Processing Toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#4">The 'Depth' option</a></li><li><a href="#6">The 'PrependPath' option</a></li><li><a href="#7">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\images'</span>;
-</pre><h2 id="2">The 'FileFilter' option</h2><p>We can specify a regular-expression pattern to filter the file names on, collecting a list of files that match. Here's an example that uses the 'FileFilter' option to recursively find every file with a '.m' extension in the Image Processing Toolbox:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>);
-size(fileList)
-display(fileList(1:5))
-</pre><pre class="codeoutput">
-ans =
-
-        1147           1
-
-  5&times;1 cell array
-
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\colorspaces\Contents.m'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\colorspaces\applycform.m'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\colorspaces\iccfind.m'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\colorspaces\iccread.m'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\colorspaces\iccroot.m'
-
-</pre><p>It's a pretty long list, so I've only shown the first 5 files it finds. Notice they are listed with the full path prepended by default.</p><h2 id="4">The 'Depth' option</h2><p>If we don't want to search quite so far down the folder tree, we can limit the search depth with the 'Depth' option. Let's see how many '.m' files are in the root folder for the Image Processing Toolbox:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 0);
-size(fileList)
-</pre><pre class="codeoutput">
-ans =
-
-     0     0
-
+  </style></head><body><div class="content"><h1><i>getAllFiles</i> demo</h1><!--introduction--><p>The <i>getAllFiles</i> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the main MATLAB toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#5">The 'Depth' option</a></li><li><a href="#7">The 'PrependPath' option</a></li><li><a href="#8">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\matlab'</span>;
+format <span class="string">compact</span>
+</pre><h2 id="2">The 'FileFilter' option</h2><p>We can specify a <a href="https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html">regular-expression</a> pattern to filter the file names on, collecting a list of files that match. Here's an example that uses the 'FileFilter' option to recursively find every file with a '.m' extension:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>);
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+fprintf(<span class="string">'%s\n'</span>, fileList{1:5}, <span class="string">'...'</span>);
+</pre><pre class="codeoutput">7591 files found.
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+matlab\+internal\+addons\AddOnsWindow.m
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+matlab\+internal\+addons\Explorer.m
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+matlab\+internal\+addons\Manager.m
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+matlab\+internal\+addons\WindowPositionUtil.m
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+matlab\+internal\+addons\showExplorer.m
+...
+</pre><p>It's a pretty long list, so I've only shown the first 5 files it finds. Notice they are listed with the full path prepended by default.</p><p>If you have multiple match expressions to filter on, you can use <a href="https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html#f0-42884">grouping operators</a> to include them all in one expression. For example, this will find every '.jpg', '.bmp', and '.tif' file:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.(jpg|bmp|tif)$'</span>);
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+fprintf(<span class="string">'%s\n'</span>, fileList{1:5}, <span class="string">'...'</span>);
+</pre><pre class="codeoutput">31 files found.
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\release\images\bg_global_logo.jpg
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\release\images\bg_h1_matlab.jpg
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\appdesigner\web\release\images\bg_global_logo.jpg
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\appdesigner\web\release\images\bg_h1_matlab.jpg
+C:\Program Files\MATLAB\R2016b\toolbox\matlab\codetools\liveeditor\release\images\bg_global_logo.jpg
+...
+</pre><h2 id="5">The 'Depth' option</h2><p>If we don't want to search quite so far down the folder tree, we can limit the search depth with the 'Depth' option. Let's see how many '.m' files are in the root folder:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 0);
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+</pre><pre class="codeoutput">0 files found.
 </pre><p>Looks like none are. They are all contained in subfolders. Let's see how many are located in just the immediate subfolders of the root folder:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 1);
-size(fileList)
-</pre><pre class="codeoutput">
-ans =
-
-   350     1
-
-</pre><h2 id="6">The 'PrependPath' option</h2><p>Maybe we just want the file names, but don't care about the absolute paths. In this case, we just set the 'PrependPath' option to <i>false</i>:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="keyword">...</span>
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+</pre><pre class="codeoutput">1917 files found.
+</pre><h2 id="7">The 'PrependPath' option</h2><p>Maybe we just want the file names, but don't care about the absolute paths. In this case, we just set the 'PrependPath' option to <i>false</i>:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="keyword">...</span>
                                  <span class="string">'PrependPath'</span>, false);
-display(fileList(1:5))
-</pre><pre class="codeoutput">  5&times;1 cell array
-
-    'Contents.m'
-    'applycform.m'
-    'iccfind.m'
-    'iccread.m'
-    'iccroot.m'
-
-</pre><h2 id="7">The 'ValidateFcn' option</h2><p>Sometimes we might want to select files based on a more complicated criteria than just what's in their names. In this case, we can use the 'ValidateFcn' option to specify a function that is to be run on each file found. This function should accept as input a structure of the form returned by the <i>dir</i> function and return a logical value (<i>true</i> to collect it in the list, <i>false</i> to ignore it). First, let's find all the '.jpg' files in the Image Processing Toolbox:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.jpg$'</span>);
-display(fileList)
-</pre><pre class="codeoutput">
-fileList =
-
-  13&times;1 cell array
-
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\car1.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\car2.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\football.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\greens.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\hands1.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\hands2.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_1.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_2.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_3.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_4.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_5.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\office_6.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\yellowlily.jpg'
-
-</pre><p>Now, we can specify an anonymous function that gets the byte size of each file and returns <i>true</i> for only those greater than 1MB:</p><pre class="codeinput">bigFcn = @(s) (s.bytes &gt; 1024^2);
-fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.jpg$'</span>, <span class="keyword">...</span>
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+fprintf(<span class="string">'%s\n'</span>, fileList{1:5}, <span class="string">'...'</span>);
+</pre><pre class="codeoutput">7591 files found.
+AddOnsWindow.m
+Explorer.m
+Manager.m
+WindowPositionUtil.m
+showExplorer.m
+...
+</pre><h2 id="8">The 'ValidateFcn' option</h2><p>Sometimes we might want to select files based on a more complicated criteria than just what's in their names. In this case, we can use the 'ValidateFcn' option to specify a function that is to be run on each file found. This function should accept as input a structure of the form returned by the <tt>dir</tt> function and return a logical value (<tt>true</tt> to collect it in the list, <tt>false</tt> to ignore it). First, let's find all the '.png' files:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.png$'</span>);
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+</pre><pre class="codeoutput">4544 files found.
+</pre><p>Now, we can specify an anonymous function that gets the byte size of each file and returns <tt>true</tt> for only those greater than 250KB:</p><pre class="codeinput">bigFcn = @(s) (s.bytes &gt; 512^2);
+fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.png$'</span>, <span class="keyword">...</span>
                                  <span class="string">'ValidateFcn'</span>, bigFcn);
-display(fileList)
-</pre><pre class="codeoutput">
-fileList =
-
-  2&times;1 cell array
-
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\car1.jpg'
-    'C:\Program Files\MATLAB\R2016b\toolbox\images\imdata\car2.jpg'
-
-</pre><p>Just the two.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+fprintf(<span class="string">'%s\n'</span>, fileList{:});
+</pre><pre class="codeoutput">C:\Program Files\MATLAB\R2016b\toolbox\matlab\imagesci\peppers.png
+</pre><p>Just the one.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% _getAllFiles_ demo
 % The _getAllFiles_ function recursively collects a list of files from a
 % folder tree, allowing you to specify the selection criteria for which
 % files are collected and how they are formatted. For these examples, we'll
-% be using the Image Processing Toolbox path.
+% be using the main MATLAB toolbox path.
 %%
 
-rootPath = 'C:\Program Files\MATLAB\R2016b\toolbox\images';
+rootPath = 'C:\Program Files\MATLAB\R2016b\toolbox\matlab';
+format compact
 
 %% The 'FileFilter' option
-% We can specify a regular-expression pattern to filter the file names on,
-% collecting a list of files that match. Here's an example that uses the
-% 'FileFilter' option to recursively find every file with a '.m' extension
-% in the Image Processing Toolbox:
+% We can specify a
+% <https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html
+% regular-expression> pattern to filter the file names on, collecting a
+% list of files that match. Here's an example that uses the 'FileFilter'
+% option to recursively find every file with a '.m' extension:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$');
-size(fileList)
-display(fileList(1:5))
+fprintf('%d files found.\n', size(fileList, 1));
+fprintf('%s\n', fileList{1:5}, '...');
 
 %%
 % It's a pretty long list, so I've only shown the first 5 files it finds.
 % Notice they are listed with the full path prepended by default.
 
+%%
+% If you have multiple match expressions to filter on, you can use
+% <https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html#f0-42884
+% grouping operators> to include them all in one expression. For example,
+% this will find every '.jpg', '.bmp', and '.tif' file:
+
+fileList = getAllFiles(rootPath, 'FileFilter', '\.(jpg|bmp|tif)$');
+fprintf('%d files found.\n', size(fileList, 1));
+fprintf('%s\n', fileList{1:5}, '...');
+
 %% The 'Depth' option
 % If we don't want to search quite so far down the folder tree, we can
 % limit the search depth with the 'Depth' option. Let's see how many '.m'
-% files are in the root folder for the Image Processing Toolbox:
+% files are in the root folder:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', 'Depth', 0);
-size(fileList)
+fprintf('%d files found.\n', size(fileList, 1));
 
 %%
 % Looks like none are. They are all contained in subfolders. Let's see how
 % many are located in just the immediate subfolders of the root folder:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', 'Depth', 1);
-size(fileList)
+fprintf('%d files found.\n', size(fileList, 1));
 
 %% The 'PrependPath' option
 % Maybe we just want the file names, but don't care about the absolute
@@ -187,30 +171,31 @@ size(fileList)
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', ...
                                  'PrependPath', false);
-display(fileList(1:5))
+fprintf('%d files found.\n', size(fileList, 1));
+fprintf('%s\n', fileList{1:5}, '...');
 
 %% The 'ValidateFcn' option
 % Sometimes we might want to select files based on a more complicated
 % criteria than just what's in their names. In this case, we can use the
 % 'ValidateFcn' option to specify a function that is to be run on each file
 % found. This function should accept as input a structure of the form
-% returned by the _dir_ function and return a logical value (_true_ to
-% collect it in the list, _false_ to ignore it). First, let's find all the
-% '.jpg' files in the Image Processing Toolbox:
+% returned by the |dir| function and return a logical value (|true| to
+% collect it in the list, |false| to ignore it). First, let's find all the
+% '.png' files:
 
-fileList = getAllFiles(rootPath, 'FileFilter', '\.jpg$');
-display(fileList)
+fileList = getAllFiles(rootPath, 'FileFilter', '\.png$');
+fprintf('%d files found.\n', size(fileList, 1));
 
 %%
 % Now, we can specify an anonymous function that gets the byte size of each
-% file and returns _true_ for only those greater than 1MB:
+% file and returns |true| for only those greater than 250KB:
 
-bigFcn = @(s) (s.bytes > 1024^2);
-fileList = getAllFiles(rootPath, 'FileFilter', '\.jpg$', ...
+bigFcn = @(s) (s.bytes > 512^2);
+fileList = getAllFiles(rootPath, 'FileFilter', '\.png$', ...
                                  'ValidateFcn', bigFcn);
-display(fileList)
+fprintf('%s\n', fileList{:});
 
 %%
-% Just the two.
+% Just the one.
 ##### SOURCE END #####
 --></body></html>

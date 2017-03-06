@@ -37,17 +37,22 @@ function fileList = getAllFiles(rootPath, varargin)
 %
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.m$');
 %
-%     2) Find all '.m' files in the given folder and its subfolders:
+%     2) Find all '.jpg', '.png', and '.tif' files:
+%
+%        fileList = getAllFiles(rootPath, ...
+%                               'FileFilter', '\.(jpg|png|tif)$');
+%
+%     3) Find all '.m' files in the given folder and its subfolders:
 %
 %        fileList = getAllFiles(rootPath, 'Depth', 1, ...
 %                                         'FileFilter', '\.m$');
 %
-%     3) Find all '.m' files, returning only the file names:
+%     4) Find all '.m' files, returning only the file names:
 %
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', ...
 %                                         'PrependPath', false);
 %
-%     4) Find all '.jpg' files with a size of more than 1MB:
+%     5) Find all '.jpg' files with a size of more than 1MB:
 %
 %        bigFcn = @(s) (s.bytes > 1024^2);
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.jpg$', ...
@@ -57,7 +62,7 @@ function fileList = getAllFiles(rootPath, varargin)
 
 % Author: Ken Eaton
 % Version: MATLAB R2016b
-% Last modified: 2/23/17
+% Last modified: 3/6/17
 % Copyright 2017 by Kenneth P. Eaton
 %--------------------------------------------------------------------------
 
