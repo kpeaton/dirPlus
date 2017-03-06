@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><i>getAllFiles</i> demo</h1><!--introduction--><p>The <i>getAllFiles</i> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the main MATLAB toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#5">The 'Depth' option</a></li><li><a href="#7">The 'PrependPath' option</a></li><li><a href="#8">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\matlab'</span>;
+  </style></head><body><div class="content"><h1><tt>getAllFiles</tt> demo</h1><!--introduction--><p>The <tt>getAllFiles</tt> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the main MATLAB toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#5">The 'Depth' option</a></li><li><a href="#7">The 'PrependPath' option</a></li><li><a href="#8">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\matlab'</span>;
 format <span class="string">compact</span>
 </pre><h2 id="2">The 'FileFilter' option</h2><p>We can specify a <a href="https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html">regular-expression</a> pattern to filter the file names on, collecting a list of files that match. Here's an example that uses the 'FileFilter' option to recursively find every file with a '.m' extension:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
@@ -115,8 +115,8 @@ fprintf(<span class="string">'%s\n'</span>, fileList{:});
 </pre><pre class="codeoutput">C:\Program Files\MATLAB\R2016b\toolbox\matlab\imagesci\peppers.png
 </pre><p>Just the one.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% _getAllFiles_ demo
-% The _getAllFiles_ function recursively collects a list of files from a
+%% |getAllFiles| demo
+% The |getAllFiles| function recursively collects a list of files from a
 % folder tree, allowing you to specify the selection criteria for which
 % files are collected and how they are formatted. For these examples, we'll
 % be using the main MATLAB toolbox path.

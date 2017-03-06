@@ -1,5 +1,5 @@
-%% _getAllFiles_ demo
-% The _getAllFiles_ function recursively collects a list of files from a
+%% |getAllFiles| demo
+% The |getAllFiles| function recursively collects a list of files from a
 % folder tree, allowing you to specify the selection criteria for which
 % files are collected and how they are formatted. For these examples, we'll
 % be using the main MATLAB toolbox path.
