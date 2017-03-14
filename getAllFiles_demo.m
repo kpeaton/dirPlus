@@ -33,6 +33,16 @@ fileList = getAllFiles(rootPath, 'FileFilter', '\.(jpg|bmp|tif)$');
 fprintf('%d files found.\n', size(fileList, 1));
 fprintf('%s\n', fileList{1:5}, '...');
 
+%% The 'Struct' option
+% Instead of getting the output as a cell array of files, we can have
+% |getAllFiles| return a structure array of the form returned by the
+% <https://www.mathworks.com/help/matlab/ref/dir.html |dir|> function by
+% setting the 'Struct' option to |true|:
+
+fileList = getAllFiles(rootPath, 'Struct', true, 'FileFilter', '\.m$');
+fprintf('%d files found.\n', size(fileList, 1));
+display(fileList(1));
+
 %% The 'Depth' option
 % If we don't want to search quite so far down the folder tree, we can
 % limit the search depth with the 'Depth' option. Let's see how many '.m'
@@ -50,7 +60,7 @@ fprintf('%d files found.\n', size(fileList, 1));
 
 %% The 'PrependPath' option
 % Maybe we just want the file names, but don't care about the absolute
-% paths. In this case, we just set the 'PrependPath' option to _false_:
+% paths. In this case, we just set the 'PrependPath' option to |false|:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', ...
                                  'PrependPath', false);
@@ -62,9 +72,9 @@ fprintf('%s\n', fileList{1:5}, '...');
 % criteria than just what's in their names. In this case, we can use the
 % 'ValidateFcn' option to specify a function that is to be run on each file
 % found. This function should accept as input a structure of the form
-% returned by the |dir| function and return a logical value (|true| to
-% collect it in the list, |false| to ignore it). First, let's find all the
-% '.png' files:
+% returned by the <https://www.mathworks.com/help/matlab/ref/dir.html
+% |dir|> function and return a logical value (|true| to collect it in the
+% list, |false| to ignore it). First, let's find all the '.png' files:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.png$');
 fprintf('%d files found.\n', size(fileList, 1));

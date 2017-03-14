@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>getAllFiles demo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-06"><meta name="DC.source" content="getAllFiles_demo.m"><style type="text/css">
+      --><title>getAllFiles demo</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-13"><meta name="DC.source" content="getAllFiles_demo.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><tt>getAllFiles</tt> demo</h1><!--introduction--><p>The <tt>getAllFiles</tt> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the main MATLAB toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#5">The 'Depth' option</a></li><li><a href="#7">The 'PrependPath' option</a></li><li><a href="#8">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\matlab'</span>;
+  </style></head><body><div class="content"><h1><tt>getAllFiles</tt> demo</h1><!--introduction--><p>The <tt>getAllFiles</tt> function recursively collects a list of files from a folder tree, allowing you to specify the selection criteria for which files are collected and how they are formatted. For these examples, we'll be using the main MATLAB toolbox path.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">The 'FileFilter' option</a></li><li><a href="#5">The 'Struct' option</a></li><li><a href="#6">The 'Depth' option</a></li><li><a href="#8">The 'PrependPath' option</a></li><li><a href="#9">The 'ValidateFcn' option</a></li></ul></div><pre class="codeinput">rootPath = <span class="string">'C:\Program Files\MATLAB\R2016b\toolbox\matlab'</span>;
 format <span class="string">compact</span>
 </pre><h2 id="2">The 'FileFilter' option</h2><p>We can specify a <a href="https://www.mathworks.com/help/matlab/matlab_prog/regular-expressions.html">regular-expression</a> pattern to filter the file names on, collecting a list of files that match. Here's an example that uses the 'FileFilter' option to recursively find every file with a '.m' extension:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
@@ -88,13 +88,23 @@ C:\Program Files\MATLAB\R2016b\toolbox\matlab\appdesigner\web\release\images\bg_
 C:\Program Files\MATLAB\R2016b\toolbox\matlab\appdesigner\web\release\images\bg_h1_matlab.jpg
 C:\Program Files\MATLAB\R2016b\toolbox\matlab\codetools\liveeditor\release\images\bg_global_logo.jpg
 ...
-</pre><h2 id="5">The 'Depth' option</h2><p>If we don't want to search quite so far down the folder tree, we can limit the search depth with the 'Depth' option. Let's see how many '.m' files are in the root folder:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 0);
+</pre><h2 id="5">The 'Struct' option</h2><p>Instead of getting the output as a cell array of files, we can have <tt>getAllFiles</tt> return a structure array of the form returned by the <a href="https://www.mathworks.com/help/matlab/ref/dir.html"><tt>dir</tt></a> function by setting the 'Struct' option to <tt>true</tt>:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'Struct'</span>, true, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>);
+fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
+display(fileList(1));
+</pre><pre class="codeoutput">7591 files found.
+       name: 'AddOnsWindow.m'
+     folder: 'C:\Program Files\MATLAB\R2016b\toolbox\matlab\addons\cef\+ma...'
+       date: '29-Mar-2016 11:52:14'
+      bytes: 2421
+      isdir: 0
+    datenum: 7.3642e+05
+</pre><h2 id="6">The 'Depth' option</h2><p>If we don't want to search quite so far down the folder tree, we can limit the search depth with the 'Depth' option. Let's see how many '.m' files are in the root folder:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 0);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
 </pre><pre class="codeoutput">0 files found.
 </pre><p>Looks like none are. They are all contained in subfolders. Let's see how many are located in just the immediate subfolders of the root folder:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="string">'Depth'</span>, 1);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
 </pre><pre class="codeoutput">1917 files found.
-</pre><h2 id="7">The 'PrependPath' option</h2><p>Maybe we just want the file names, but don't care about the absolute paths. In this case, we just set the 'PrependPath' option to <i>false</i>:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="keyword">...</span>
+</pre><h2 id="8">The 'PrependPath' option</h2><p>Maybe we just want the file names, but don't care about the absolute paths. In this case, we just set the 'PrependPath' option to <tt>false</tt>:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.m$'</span>, <span class="keyword">...</span>
                                  <span class="string">'PrependPath'</span>, false);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
 fprintf(<span class="string">'%s\n'</span>, fileList{1:5}, <span class="string">'...'</span>);
@@ -105,7 +115,7 @@ Manager.m
 WindowPositionUtil.m
 showExplorer.m
 ...
-</pre><h2 id="8">The 'ValidateFcn' option</h2><p>Sometimes we might want to select files based on a more complicated criteria than just what's in their names. In this case, we can use the 'ValidateFcn' option to specify a function that is to be run on each file found. This function should accept as input a structure of the form returned by the <tt>dir</tt> function and return a logical value (<tt>true</tt> to collect it in the list, <tt>false</tt> to ignore it). First, let's find all the '.png' files:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.png$'</span>);
+</pre><h2 id="9">The 'ValidateFcn' option</h2><p>Sometimes we might want to select files based on a more complicated criteria than just what's in their names. In this case, we can use the 'ValidateFcn' option to specify a function that is to be run on each file found. This function should accept as input a structure of the form returned by the <a href="https://www.mathworks.com/help/matlab/ref/dir.html"><tt>dir</tt></a> function and return a logical value (<tt>true</tt> to collect it in the list, <tt>false</tt> to ignore it). First, let's find all the '.png' files:</p><pre class="codeinput">fileList = getAllFiles(rootPath, <span class="string">'FileFilter'</span>, <span class="string">'\.png$'</span>);
 fprintf(<span class="string">'%d files found.\n'</span>, size(fileList, 1));
 </pre><pre class="codeoutput">4544 files found.
 </pre><p>Now, we can specify an anonymous function that gets the byte size of each file and returns <tt>true</tt> for only those greater than 250KB:</p><pre class="codeinput">bigFcn = @(s) (s.bytes &gt; 512^2);
@@ -150,6 +160,16 @@ fileList = getAllFiles(rootPath, 'FileFilter', '\.(jpg|bmp|tif)$');
 fprintf('%d files found.\n', size(fileList, 1));
 fprintf('%s\n', fileList{1:5}, '...');
 
+%% The 'Struct' option
+% Instead of getting the output as a cell array of files, we can have
+% |getAllFiles| return a structure array of the form returned by the
+% <https://www.mathworks.com/help/matlab/ref/dir.html |dir|> function by
+% setting the 'Struct' option to |true|:
+
+fileList = getAllFiles(rootPath, 'Struct', true, 'FileFilter', '\.m$');
+fprintf('%d files found.\n', size(fileList, 1));
+display(fileList(1));
+
 %% The 'Depth' option
 % If we don't want to search quite so far down the folder tree, we can
 % limit the search depth with the 'Depth' option. Let's see how many '.m'
@@ -167,7 +187,7 @@ fprintf('%d files found.\n', size(fileList, 1));
 
 %% The 'PrependPath' option
 % Maybe we just want the file names, but don't care about the absolute
-% paths. In this case, we just set the 'PrependPath' option to _false_:
+% paths. In this case, we just set the 'PrependPath' option to |false|:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', ...
                                  'PrependPath', false);
@@ -179,9 +199,9 @@ fprintf('%s\n', fileList{1:5}, '...');
 % criteria than just what's in their names. In this case, we can use the
 % 'ValidateFcn' option to specify a function that is to be run on each file
 % found. This function should accept as input a structure of the form
-% returned by the |dir| function and return a logical value (|true| to
-% collect it in the list, |false| to ignore it). First, let's find all the
-% '.png' files:
+% returned by the <https://www.mathworks.com/help/matlab/ref/dir.html
+% |dir|> function and return a logical value (|true| to collect it in the
+% list, |false| to ignore it). First, let's find all the '.png' files:
 
 fileList = getAllFiles(rootPath, 'FileFilter', '\.png$');
 fprintf('%d files found.\n', size(fileList, 1));

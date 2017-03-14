@@ -9,6 +9,11 @@ function fileList = getAllFiles(rootPath, varargin)
 %   will modify how files are selected based on the property/value pairs
 %   specified. Valid properties that the user can set are:
 %
+%     'Struct'      - A logical value determining if the output FILELIST
+%                     should instead be a structure array of the form
+%                     returned by the DIR function. If TRUE, FILELIST will
+%                     be an N-by-1 structure array instead of a cell array
+%                     of file names/paths.
 %     'Depth'       - A non-negative integer value for the maximum folder
 %                     tree depth that getAllFiles will search through. A
 %                     value of 0 will only search in ROOTPATH, a value of 1
@@ -23,7 +28,8 @@ function fileList = getAllFiles(rootPath, varargin)
 %     'PrependPath' - A logical value determining if the full path from
 %                     ROOTPATH to the file is prepended to each file in
 %                     FILELIST. The default TRUE will prepend the full
-%                     path, otherwise just the file name is returned.
+%                     path, otherwise just the file name is returned. This
+%                     setting is ignored if the 'Struct' argument is TRUE.
 %     'ValidateFcn' - A handle to a function that takes as input a
 %                     structure of the form returned by the DIR function
 %                     and returns a logical value. This function will be
@@ -37,22 +43,27 @@ function fileList = getAllFiles(rootPath, varargin)
 %
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.m$');
 %
-%     2) Find all '.jpg', '.png', and '.tif' files:
+%     2) Find all '.m' files, returning the list as a structure array:
+%
+%        fileList = getAllFiles(rootPath, 'Struct', true, ...
+%                                         'FileFilter', '\.m$');
+%
+%     3) Find all '.jpg', '.png', and '.tif' files:
 %
 %        fileList = getAllFiles(rootPath, ...
 %                               'FileFilter', '\.(jpg|png|tif)$');
 %
-%     3) Find all '.m' files in the given folder and its subfolders:
+%     4) Find all '.m' files in the given folder and its subfolders:
 %
 %        fileList = getAllFiles(rootPath, 'Depth', 1, ...
 %                                         'FileFilter', '\.m$');
 %
-%     4) Find all '.m' files, returning only the file names:
+%     5) Find all '.m' files, returning only the file names:
 %
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.m$', ...
 %                                         'PrependPath', false);
 %
-%     5) Find all '.jpg' files with a size of more than 1MB:
+%     6) Find all '.jpg' files with a size of more than 1MB:
 %
 %        bigFcn = @(s) (s.bytes > 1024^2);
 %        fileList = getAllFiles(rootPath, 'FileFilter', '\.jpg$', ...
@@ -60,12 +71,9 @@ function fileList = getAllFiles(rootPath, varargin)
 %
 %   See also dir, regexp.
 
-% TODO:
-% - Add '-struct' option? (return dir struct instead of file name)
-
 % Author: Ken Eaton
 % Version: MATLAB R2016b
-% Last modified: 3/6/17
+% Last modified: 3/13/17
 % Copyright 2017 by Kenneth P. Eaton
 %--------------------------------------------------------------------------
 
@@ -80,6 +88,8 @@ function fileList = getAllFiles(rootPath, varargin)
     parser.PartialMatching = true;
     addRequired(parser, 'rootPath', ...
                 @(s) validateattributes(s, {'char'}, {'nonempty'}));
+    addParameter(parser, 'Struct', false, ...
+                 @(b) validateattributes(b, {'logical'}, {'scalar'}));
     addParameter(parser, 'Depth', recursionLimit, ...
                  @(s) validateattributes(s, {'numeric'}, ...
                                          {'scalar', 'nonnegative', ...
@@ -99,17 +109,17 @@ function fileList = getAllFiles(rootPath, varargin)
   parse(parser, rootPath, varargin{:});
   fileList = getAllFiles_core(parser.Results.rootPath, 0, ...
                               rmfield(parser.Results, 'rootPath'));
+  if parser.Results.Struct
+    fileList = vertcat(fileList{:});
+  end
 
 end
 
 %~~~Begin local functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 %--------------------------------------------------------------------------
+% Core recursive function to find files.
 function fileList = getAllFiles_core(rootPath, depth, optionStruct)
-%
-%   Core recursive function to find files.
-%
-%--------------------------------------------------------------------------
 
   % Find all valid subdirectories in current directory:
 
@@ -144,12 +154,16 @@ function fileList = getAllFiles_core(rootPath, depth, optionStruct)
 
       validateFcn = optionStruct.ValidateFcn;
       if ~isempty(validateFcn)
-        fileList = fileList(arrayfun(validateFcn, dirData));
+        validateIndex = arrayfun(validateFcn, dirData);
+        fileList = fileList(validateIndex);
+        dirData = dirData(validateIndex);
       end
 
-      % Prepend full path to file list, if specified:
+      % Use structure data or prepend full path to file list, if specified:
 
-      if (~isempty(fileList) && optionStruct.PrependPath)
+      if optionStruct.Struct
+        fileList = {dirData};
+      elseif ~isempty(fileList) && optionStruct.PrependPath
         fileList = fullfile(rootPath, fileList);
       end
 
