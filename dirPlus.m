@@ -113,9 +113,10 @@ function output = dirPlus(rootPath, varargin)
 %   See also dir, regexp.
 
 % Author: Ken Eaton
-% Version: MATLAB R2016b
-% Last modified: 3/21/17
+% Version: MATLAB R2016b - MATLAB R2011a
+% Last modified: 4/13/17
 % Copyright 2017 by Kenneth P. Eaton
+% Copyright 2017 by Stephen Larroque
 %--------------------------------------------------------------------------
 
   % Create input parser (only have to do this once, hence the use of a
@@ -126,40 +127,47 @@ function output = dirPlus(rootPath, varargin)
     recursionLimit = get(0, 'RecursionLimit');
     parser = inputParser();
     parser.FunctionName = 'dirPlus';
-    parser.PartialMatching = true;
+    if ~verLessThan('matlab', '8.2') % MATLAB R2013b = 8.2
+        parser.PartialMatching = true;
+    end
 
     % Add general parameters:
+    if verLessThan('matlab', '8.2')
+        parserAddParameter = @(p, path, defaultval, valfunc)addParamValue(p, path, defaultval, valfunc);
+    else
+        parserAddParameter = @(p, path, defaultval, valfunc)addParameter(p, path, defaultval, valfunc);
+    end
 
     addRequired(parser, 'rootPath', ...
                 @(s) validateattributes(s, {'char'}, {'nonempty'}));
-    addParameter(parser, 'Struct', false, ...
+    parserAddParameter(parser, 'Struct', false, ...
                  @(b) validateattributes(b, {'logical'}, {'scalar'}));
-    addParameter(parser, 'Depth', recursionLimit, ...
+    parserAddParameter(parser, 'Depth', recursionLimit, ...
                  @(s) validateattributes(s, {'numeric'}, ...
                                          {'scalar', 'nonnegative', ...
                                           'nonnan', 'integer', ...
                                           '<=', recursionLimit}));
-    addParameter(parser, 'ReturnDirs', false, ...
+    parserAddParameter(parser, 'ReturnDirs', false, ...
                  @(b) validateattributes(b, {'logical'}, {'scalar'}));
-    addParameter(parser, 'PrependPath', true, ...
+    parserAddParameter(parser, 'PrependPath', true, ...
                  @(b) validateattributes(b, {'logical'}, {'scalar'}));
 
     % Add file-specific parameters:
 
-    addParameter(parser, 'FileFilter', '', ...
+    parserAddParameter(parser, 'FileFilter', '', ...
                  @(s) validateattributes(s, {'char'}, {'row'}));
-    addParameter(parser, 'ValidateFileFcn', [], ...
+    parserAddParameter(parser, 'ValidateFileFcn', [], ...
                  @(f) validateattributes(f, {'function_handle'}, ...
                                          {'scalar'}));
 
     % Add directory-specific parameters:
 
-    addParameter(parser, 'DirFilter', '', ...
+    parserAddParameter(parser, 'DirFilter', '', ...
                  @(s) validateattributes(s, {'char'}, {'row'}));
-    addParameter(parser, 'ValidateDirFcn', [], ...
+    parserAddParameter(parser, 'ValidateDirFcn', [], ...
                  @(f) validateattributes(f, {'function_handle'}, ...
                                          {'scalar'}));
-    addParameter(parser, 'RecurseInvalid', false, ...
+    parserAddParameter(parser, 'RecurseInvalid', false, ...
                  @(b) validateattributes(b, {'logical'}, {'scalar'}));
 
   end
@@ -274,7 +282,7 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
         if optionStruct.Struct
           output = {fileData};
         elseif ~isempty(output) && optionStruct.PrependPath
-          output = fullfile(rootPath, output);
+          output = cellfun(@(S) fullfile(rootPath, S), output, 'Uniform', 0);
         end
 
       end
@@ -302,7 +310,7 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
 
     nSubDirs = numel(subDirs);
     if (nSubDirs > 0)
-      subDirs = fullfile(rootPath, subDirs);
+      subDirs = cellfun(@(S) fullfile(rootPath, S), subDirs, 'Uniform', 0);
       output = {output; cell(nSubDirs, 1)};
       for iSub = 1:nSubDirs
         output{iSub+1} = dirPlus_core(subDirs{iSub}, optionStruct, ...
