@@ -127,17 +127,14 @@ function output = dirPlus(rootPath, varargin)
     recursionLimit = get(0, 'RecursionLimit');
     parser = inputParser();
     parser.FunctionName = 'dirPlus';
-    if ~verLessThan('matlab', '8.2') % MATLAB R2013b = 8.2
+    if verLessThan('matlab', '8.2') % MATLAB R2013b = 8.2
+        parserAddParameter = @addParamValue;
+    else
         parser.PartialMatching = true;
+        parserAddParameter = @addParameter;
     end
 
     % Add general parameters:
-    if verLessThan('matlab', '8.2')
-        parserAddParameter = @(p, path, defaultval, valfunc)addParamValue(p, path, defaultval, valfunc);
-    else
-        parserAddParameter = @(p, path, defaultval, valfunc)addParameter(p, path, defaultval, valfunc);
-    end
-
     addRequired(parser, 'rootPath', ...
                 @(s) validateattributes(s, {'char'}, {'nonempty'}));
     parserAddParameter(parser, 'Struct', false, ...
@@ -195,6 +192,13 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
   dirIndex = [rootData.isdir];
   subDirs = {};
   validIndex = [];
+
+  % Compatibility
+  if verLessThan('matlab', '8.2') % MATLAB R2013b = 8.2
+    cellfullfile = @(rootPath, cellfilepaths) cellfun(@(S) fullfile(rootPath, S), cellfilepaths, 'Uniform', 0);
+  else
+    cellfullfile = @fullfile;
+  end
 
   % Find valid subdirectories, only if necessary:
 
@@ -282,7 +286,7 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
         if optionStruct.Struct
           output = {fileData};
         elseif ~isempty(output) && optionStruct.PrependPath
-          output = cellfun(@(S) fullfile(rootPath, S), output, 'Uniform', 0);
+          output = cellfullfile(rootPath, output);
         end
 
       end
@@ -310,7 +314,7 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
 
     nSubDirs = numel(subDirs);
     if (nSubDirs > 0)
-      subDirs = cellfun(@(S) fullfile(rootPath, S), subDirs, 'Uniform', 0);
+      subDirs = cellfullfile(rootPath, subDirs);
       output = {output; cell(nSubDirs, 1)};
       for iSub = 1:nSubDirs
         output{iSub+1} = dirPlus_core(subDirs{iSub}, optionStruct, ...
