@@ -191,7 +191,7 @@ function output = dirPlus_core(rootPath, optionStruct, depth, isValid)
   if isempty(fullfilecell)
     if verLessThan('matlab', '8.0')  % MATLAB R2012b = 8.0
       fullfilecell = @(P, C) cellfun(@(S) fullfile(P, S), C, ...
-                                     'UniformOuput', false);
+                                     'UniformOutput', false);
     else
       fullfilecell = @fullfile;
     end
